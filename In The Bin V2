@@ -1,0 +1,250 @@
+//Dom's Bitmoji 
+var drawHead = function(x,y,h) {
+    noStroke();
+    fill(255, 224, 189);
+    ellipse(x-h/100,y-h/100,h/100*83,h-h/100); // Head
+    fill(217, 246, 255); // Skin
+    arc(x-h/100*42,y+h/100*37,h/100*28,h/100*45,0,361); // Left Neck
+    arc(x+h/100*42,y+h/100*37,h/100*28,h/100*45,0,361); // Right Neck
+    fill(51, 122, 44);
+    ellipse(x-h/100*10,y,h/100*6,h-h/100*96); // Left Eye
+    ellipse(x+h/100*17,y,h/100*6,h-h/100*96); // Right Eye
+    stroke(0,0,0); // Nose and Mouth Outline
+    fill(255, 224, 189); // Skin
+    bezier(x-h/100,y-h/100,x+h/100*21,y+h/100*22,x-h/100*8,y+h/100*20,x-h/100*4,y+h/100*15); // Nose
+    fill(255, 255, 255); // Teeth
+    arc(x+h/100*3,y+h*25/100,h/100*30,h-h/100*87,1,180); // Mouth
+    line(x-h/100*14,y+h/100*24,x+h/100*19,y+h/100*24); // Top of Mouth
+};
+var drawBody = function(x,y,h,shirtColor) {
+    fill(shirtColor); // Shirt Color
+    rect(x-h/100*50,y+h*50/100,h/100*100,h-h/100*50); // Shirt
+    fill(0, 0, 0); // Hat Color
+    ellipse(x-h/100,y-h/100*30,h/100*76,h-h/100*60); // Top of Hat
+    rect(x-h/100*40,y-h*35/100,h/100*80,h-h/100*75); // Hat
+};
+var drawBitmoji1 = function (bitmojiObject) {
+    var x = bitmojiObject.x;
+    var y = bitmojiObject.y; 
+    var h = bitmojiObject.h;
+    drawHead(x,y,h);
+    drawBody(x,y,h,bitmojiObject.shirtColor);
+  if (bitmojiObject.initials === true) {
+      text("D D",x-h/171*40,y+h/126*70);
+  }
+}; 
+
+// Rick Bitmoji
+var drawBitmojiHead = function(x, y, height) {
+    var p = height/100;
+   //neck
+    noStroke();
+    fill(255,205,189); //Skin tone
+    rect(x+(p*88),y+(p*146),p*26,p*22);
+
+    //Face
+    noStroke();
+    fill(255,205,189); //Skin Tone
+    ellipse(x+(p*100),y+(p*100),p*83,p*100); // Head Shape
+    fill(217, 246, 255); //color to adjust face shape
+    rect(x+(p*48),y+(p*80),p*14,p*60); // Left face adjustment
+    rect(x+(p*138),y+(p*80),p*14,p*60); // right face adjustment
+
+    //Hair
+    fill(0, 0, 0); //Hair color
+    arc(x+(p*100), y+(p*80), p*78, p*60, 180, 360); //Hair shape
+
+    //sun glasses
+    stroke(0); //sunglass color
+    rect(x+(p*77),y+(p*93),p*15,p*17); //left sunglass shape
+    rect(x+(p*106),y+(p*93),p*15,p*17); //right sunglass shape
+    strokeWeight(3);
+    line(x+(p*63), y+(p*100), x+(p*77), y+(p*100)); //left glasses line
+    line(x+(p*85), y+(p*100), x+(p*136), y+(p*100));//right and middle glasses line
+    fill(255,205,189); //Skin tone
+    arc(x+(p*100), y+(p*97), p*13, p*3, 180, 360); //Middle bridge of glasses
+
+    //Nose
+    strokeWeight(1.5); //Nose outline
+    bezier(x+(p*100), y+(p*101), x+(p*113), y+(p*121), x+(p*98), y+(p*118), x+(p*96), y+(p*116)); // Nose shape
+
+    //mouth
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    arc(x+(p*101),y+(p*125),p*22,p*3,180,360); //Top Stache
+    arc(x+(p*101),y+(p*146),p*25,p*8,37,144); //bottom stache
+
+    fill(250, 250, 250); //Bottom teeth
+    arc(x+(p*101),y+(p*129),p*25,p*12,43,144); //bottom lip
+    fill(255, 255, 255); //Top Teeth
+    arc(x+(p*101),y+(p*131),p*21,p*4,180,360); //Top lip 
+};    
+var drawBitmojiBody = function(x,y,height) {
+    var p = height/100;
+    //Body
+    noStroke();
+    fill(179, 204, 104); //Shirt color
+    rect(x+(p*25),y+(p*191),p*149,p*68);
+    arc(x+(p*100), y+(p*191), p*150, p*57, 91, 270);
+    arc(x+(p*99), y+(p*191), p*150, p*57, 270, 360);
+    fill(255, 255, 255);
+    textSize(p*50);
+    text("RF",x+(p*70),y+(p*193));
+};
+var drawBitmoji = function(x,y,height) {
+    drawBitmojiHead(x,y,height);
+    drawBitmojiBody(x,y,height);
+};
+
+//*Global Variables*
+var characterX = random(50,350);
+var characterY = random(50,350);
+var score = 0;
+var m = millis();
+var currentScene = 0;
+frameRate(60);
+var chestX = 150;
+
+
+/* Copy in the Khan Button class */
+var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+};
+Button.prototype.draw = function() {
+    fill(0, 234, 255);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(22);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+var btn1 = new Button({
+    x: 140,
+    y: 330,
+    width: 135,
+    label: "Press to Start"
+});
+
+
+// Class created for the falling Gems
+var Gem = function(x, y, img) {
+    this.x = x;
+    this.y = y;
+    this.img = img;
+    this.speed = 2;
+};
+Gem.prototype.draw = function() {
+    image(this.img, this.x, this.y, 25, 25); // You can adjust the size as needed
+};
+Gem.prototype.falling = function() {
+    this.y += this.speed;
+
+    // Reset gem position if it goes off the bottom of the game screen
+    if (this.y > 400) {
+        this.y = 0;
+        this.x = random(20, 390); // Randomize the x position within the screen width
+    }
+};
+// Empty array to store gems
+var gems = [];
+// Function to create gems
+var createGems = function(numGems) {
+    for (var i = 0; i < numGems; i++) {
+        var gem = new Gem(random(20, 380), random(0, 400), getImage("cute/GemOrange"),this.x,this.y);
+        gems.push(gem);
+
+        gem = new Gem(random(20, 380), random(0, 400), getImage("cute/GemGreen"),this.x,this.y);
+        gems.push(gem);
+        gem = new Gem(random(20, 380), random(0, 400), getImage("cute/GemBlue"),this.x,this.y);
+        gems.push(gem);
+    }
+};
+createGems(5);
+
+
+//Drawing the Scenes
+var splashScreen = function() {
+    currentScene = 0;
+    background(217, 246, 255);
+    drawBitmoji1({
+        x: 338,
+        y: 150,
+        h: 100,
+        shirtColor: color(255, 0, 0),
+        initials: true
+    }); //Dom's Bitmoji Call
+    drawBitmoji(-10,56,75); //Rick's Bitmoji Call
+    btn1.draw(); //draws start button
+    image(getImage("cute/ChestClosed"),156,126,100,125);
+    image(getImage("cute/GemGreen"),25,276,90,125);
+    image(getImage("cute/GemOrange"),300,276,90,125);
+    image(getImage("cute/Key"),166,41,87,125);
+    //Text for the splash screen
+    var f = createFont("serif");
+    textFont(f);
+    textSize(20);
+    text("Rick",45,250);
+    text("Dom", 320,250);
+    text("Collect the Falling GEMS to WIN!", 61, 282);
+    textSize(35);
+    text("IN THE BIN", 123, 23);
+};
+var gameScreen = function() {
+    currentScene = 1;
+    background(217, 246, 255);
+    chestX = constrain(chestX, 0,300); // Keep chest on screen
+    // Logic so that arrow keys control the chest's movement
+    if (keyIsPressed)
+    {
+        if (keyCode === RIGHT)
+        {
+            chestX += 3;
+        }
+        else if (keyCode === LEFT)
+        {
+            chestX-= 3;
+        }
+    }
+    // Making the gems falling from sky
+    for (var i = 0; i < gems.length; i++) {
+        gems[i].falling();
+        gems[i].draw();
+    }
+    image(getImage("cute/PlainBlock"), 0, 335, 400, 70);
+    image(getImage("cute/ChestOpen"), chestX, 274, 100, 125);
+    //Drawing the sun
+    fill(255, 221, 0); 
+    ellipse(36, 36, 70, 70); 
+};
+
+
+var draw = function() {
+    if (currentScene === 0) {
+        splashScreen();
+    } else if (currentScene === 1) {
+        gameScreen();
+    }
+};
+
+
+mouseClicked = function() {
+ if (currentScene === 0 && btn1.isMouseInside()) {
+     gameScreen();
+ }
+     else if (currentScene === 1) {
+         var d = dist(mouseX,mouseY,characterX,characterY);
+         if (d < 80) {
+         score++;
+         }
+     }
+};
