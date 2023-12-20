@@ -1,0 +1,416 @@
+/* Dom's Bitmoji */
+var drawHead = function(x,y,h) {
+    noStroke();
+    fill(255, 224, 189);
+    ellipse(x-h/100,y-h/100,h/100*83,h-h/100); // Head
+    fill(217, 246, 255); // Skin
+    arc(x-h/100*42,y+h/100*37,h/100*28,h/100*45,0,361); // Left Neck
+    arc(x+h/100*42,y+h/100*37,h/100*28,h/100*45,0,361); // Right Neck
+    fill(51, 122, 44);
+    ellipse(x-h/100*10,y,h/100*6,h-h/100*96); // Left Eye
+    ellipse(x+h/100*17,y,h/100*6,h-h/100*96); // Right Eye
+    stroke(0,0,0); // Nose and Mouth Outline
+    fill(255, 224, 189); // Skin
+    bezier(x-h/100,y-h/100,x+h/100*21,y+h/100*22,x-h/100*8,y+h/100*20,x-h/100*4,y+h/100*15); // Nose
+    fill(255, 255, 255); // Teeth
+    arc(x+h/100*3,y+h*25/100,h/100*30,h-h/100*87,1,180); // Mouth
+    line(x-h/100*14,y+h/100*24,x+h/100*19,y+h/100*24); // Top of Mouth
+};
+var drawBody = function(x,y,h,shirtColor) {
+    fill(shirtColor); // Shirt Color
+    rect(x-h/100*50,y+h*50/100,h/100*100,h-h/100*50); // Shirt
+    fill(0, 0, 0); // Hat Color
+    ellipse(x-h/100,y-h/100*30,h/100*76,h-h/100*60); // Top of Hat
+    rect(x-h/100*40,y-h*35/100,h/100*80,h-h/100*75); // Hat
+};
+var drawBitmoji1 = function (bitmojiObject) {
+    var x = bitmojiObject.x;
+    var y = bitmojiObject.y; 
+    var h = bitmojiObject.h;
+    drawHead(x,y,h);
+    drawBody(x,y,h,bitmojiObject.shirtColor);
+  if (bitmojiObject.initials === true) {
+      text("D D",x-h/171*40,y+h/126*70);
+  }
+}; 
+
+/* Rick Bitmoji */
+var drawBitmojiHead = function(x, y, height) {
+    var p = height/100;
+   //neck
+    noStroke();
+    fill(255,205,189); //Skin tone
+    rect(x+(p*88),y+(p*146),p*26,p*22);
+
+    //Face
+    noStroke();
+    fill(255,205,189); //Skin Tone
+    ellipse(x+(p*100),y+(p*100),p*83,p*100); // Head Shape
+    fill(217, 246, 255); //color to adjust face shape
+    rect(x+(p*48),y+(p*80),p*14,p*60); // Left face adjustment
+    rect(x+(p*138),y+(p*80),p*14,p*60); // right face adjustment
+
+    //Hair
+    fill(0, 0, 0); //Hair color
+    arc(x+(p*100), y+(p*80), p*78, p*60, 180, 360); //Hair shape
+
+    //sun glasses
+    stroke(0); //sunglass color
+    rect(x+(p*77),y+(p*93),p*15,p*17); //left sunglass shape
+    rect(x+(p*106),y+(p*93),p*15,p*17); //right sunglass shape
+    strokeWeight(3);
+    line(x+(p*63), y+(p*100), x+(p*77), y+(p*100)); //left glasses line
+    line(x+(p*85), y+(p*100), x+(p*136), y+(p*100));//right and middle glasses line
+    fill(255,205,189); //Skin tone
+    arc(x+(p*100), y+(p*97), p*13, p*3, 180, 360); //Middle bridge of glasses
+
+    //Nose
+    strokeWeight(1.5); //Nose outline
+    bezier(x+(p*100), y+(p*101), x+(p*113), y+(p*121), x+(p*98), y+(p*118), x+(p*96), y+(p*116)); // Nose shape
+
+    //mouth
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    arc(x+(p*101),y+(p*125),p*22,p*3,180,360); //Top Stache
+    arc(x+(p*101),y+(p*146),p*25,p*8,37,144); //bottom stache
+
+    fill(250, 250, 250); //Bottom teeth
+    arc(x+(p*101),y+(p*129),p*25,p*12,43,144); //bottom lip
+    fill(255, 255, 255); //Top Teeth
+    arc(x+(p*101),y+(p*131),p*21,p*4,180,360); //Top lip 
+};    
+var drawBitmojiBody = function(x,y,height) {
+    var p = height/100;
+    //Body
+    noStroke();
+    fill(179, 204, 104); //Shirt color
+    rect(x+(p*25),y+(p*191),p*149,p*68);
+    arc(x+(p*100), y+(p*191), p*150, p*57, 91, 270);
+    arc(x+(p*99), y+(p*191), p*150, p*57, 270, 360);
+    fill(255, 255, 255);
+    textSize(p*50);
+    text("RF",x+(p*70),y+(p*193));
+};
+var drawBitmoji = function(x,y,height) {
+    drawBitmojiHead(x,y,height);
+    drawBitmojiBody(x,y,height);
+};
+
+
+/* Global Variables */
+var score = 0; // Starting score
+var m = millis(); // millis but in short
+var currentScene = 0; // Starting Screen
+frameRate(60); // Capped Frame rate
+var chestX = 150; // Default chest x postion
+var startTime = null; // Default start time
+var f = createFont("serif"); // Variable for font
+
+
+/* The Khan Button class */
+var Button = function(config) {
+    this.x = config.x || 0;
+    this.y = config.y || 0;
+    this.width = config.width || 150;
+    this.height = config.height || 50;
+    this.label = config.label || "Click";
+};
+Button.prototype.draw = function() {
+    fill(0, 234, 255);
+    rect(this.x, this.y, this.width, this.height, 5);
+    fill(0, 0, 0);
+    textSize(22);
+    textAlign(LEFT, TOP);
+    text(this.label, this.x+10, this.y+this.height/4);
+};
+Button.prototype.isMouseInside = function() {
+    return mouseX > this.x &&
+           mouseX < (this.x + this.width) &&
+           mouseY > this.y &&
+           mouseY < (this.y + this.height);
+};
+var btn1 = new Button({
+    x: 140,
+    y: 342,
+    width: 135,
+    label: "Press to Play"
+}); // Button to start the game
+var btn2 = new Button({
+    x: 140,
+    y: 281,
+    width: 135,
+    label: " Instructions"
+}); // Button for instruction's page
+var btn3 = new Button({
+    x: 280,
+    y: 20,
+    width: 100,
+    label: "  Home"
+}); // Button for Home page
+
+/* Class created for the falling Gems */
+var Gem = function(x, y, img) {
+    this.x = x;
+    this.y = y;
+    this.img = img;
+    this.speed = 3;
+};
+Gem.prototype.draw = function() {
+    image(this.img, this.x, this.y, 15, 15); // Controls size
+};
+Gem.prototype.falling = function() {
+    this.y += this.speed; // Speed of Gem falling
+
+    // Reset gem position if it goes off the bottom of the game screen
+    if (this.y > 400) {
+        this.y = 0;
+        this.x = random(20, 390); // Randomize the x position within the screen width
+    }
+    // Logic for when gem and chest collide
+    if (this.x > chestX && this.x < chestX + 40 && this.y  > 280 && this.y < 290) {
+        this.y = 0; // Y-Postion at top of screen
+        this.x = random(20,390); // Random X postion for gems
+        score++; // Adds on to score when gem and chest collide
+    }
+};
+var gems = []; // Empty array to store gems
+var createGems = function(numGems) {
+    for (var i = 0; i < numGems; i++) {
+        var gem = new Gem(random(20, 380), random(0, 400), getImage("cute/GemOrange"),this.x,this.y);
+        gems.push(gem);
+
+        gem = new Gem(random(20, 380), random(0, 400), getImage("cute/GemGreen"),this.x,this.y);
+        gems.push(gem);
+        gem = new Gem(random(20, 380), random(0, 400), getImage("cute/GemBlue"),this.x,this.y);
+        gems.push(gem);
+    } // For loop to create the different gem & push them into the empty array
+}; // Function to create gems
+
+createGems(4); // Creates the gems & how many
+
+/* Class created for the falling bombs */
+var Bomb = function(x, y, img) {
+    this.x = x;
+    this.y = y;
+    this.img = img;
+    this.speed = 5;
+};
+Bomb.prototype.draw = function() {
+    image(this.img, this.x, this.y, 25, 25); // Controls the size of bombs
+};
+Bomb.prototype.falling = function() {
+    this.y += this.speed; // Speed of falling bombs
+
+    // Reset bomb position if it goes off the bottom of the game screen
+    if (this.y > 400) {
+        this.y = 0;
+        this.x = random(20, 390); // Randomize the x position within the screen width
+    }
+    // Logic for what happens when chest and bombs collide
+    if (this.x > chestX && this.x < chestX + 40 && this.y  > 280 && this.y < 290) {
+        this.y = 0; // Y-postion set to top screen
+        this.x = random(20,390); // random x-postion when falling 
+        score--; // Minus one from score everytime bombs & chest collide
+    }
+};
+var bombs = []; // Empty array to store bombs
+var createBombs = function(numBombs) {
+    for (var i = 0; i < numBombs; i++) {
+        var bomb = new Bomb(random(20, 380), random(0, 400), getImage("avatars/starky-seed"),this.x,this.y);
+        bombs.push(bomb);
+    } // For loop to create the bombs & pushes them into empty bombs array
+};
+
+createBombs(5); // Creates the bombs & how many
+
+
+/* Drawing the Scenes */
+var splashScreen = function() {
+    currentScene = 0; //First scene
+    startTime = null; // startTime is not running
+    background(217, 246, 255);
+    
+    //All intro screen images
+    drawBitmoji1({
+        x: 338,
+        y: 150,
+        h: 100,
+        shirtColor: color(255, 0, 0),
+        initials: true
+    }); // Dom's Bitmoji Called
+    drawBitmoji(-10,56,75); // Rick's Bitmoji Called
+    btn1.draw(); // Draws start button
+    btn2.draw(); // Draws Instruction button
+    image(getImage("cute/ChestClosed"),156,126,100,125);
+    image(getImage("cute/GemGreen"),25,276,90,125);
+    image(getImage("cute/GemOrange"),300,276,90,125);
+    image(getImage("cute/Key"),166,41,87,125);
+    
+    //Text for the splash screen
+    textFont(f); //font: Serif
+    textSize(20);
+    text("Rick",45,250);
+    text("Dom", 320,250);
+    textSize(35);
+    text("IN THE BIN", 123, 23);
+}; // The intro screen
+var guideScreen = function() {
+    currentScene = 1; // Current Scene
+    background(217, 246, 255); // Background color for screen
+    textFont(f); // font: serif
+    textSize(35); // Title text size
+    text("Collect the GEMS to WIN!", 10, 10); // Title of Screen
+    
+    // Images used on Guide Screen
+    image(getImage("cute/GemGreen"),33,60,60,90);
+    image(getImage("cute/GemOrange"),5,110,60,90);
+    image(getImage("cute/GemBlue"),61,110,60,90);
+    image(getImage("avatars/starky-seed"),40, 185, 60, 90);
+    image(getImage("cute/ChestOpen"), 45, 240, 50, 80); //Open chest image
+    
+    // Instructional text to guide the player
+    textSize(15);
+    text("- Each gem adds ONE point to your score!", 140, 130);
+    text("- Avoid these or else you'll LOSE a point!", 110, 220);
+    text("- Move using the LEFT & RIGHT arrow keys!", 110, 285);
+    
+    btn1.draw(); // Calling the button that starts the game
+
+}; // The instruction screen
+var gameScreen = function() {
+    currentScene = 2; // Current Scene for this Screen
+    
+    if (!startTime) {
+        startTime = millis();
+    } // Logic for starting the timer
+    
+    // Calculating Elapsed timer
+    var elapsedSeconds = Math.floor((millis() - startTime) / 1000);
+    
+    // Logic to stop the game after 21 seconds
+    if (elapsedSeconds === 21){
+        startTime = null; // Stops the timer
+        currentScene = 3; // Changes screen to endScreen
+    } // Logic to stop the timer and change screens
+    
+    background(217, 246, 255); // Color of Sky
+    chestX = constrain(chestX, 0,350); // Constain chest to screen
+    
+    // Logic so that arrow keys control the chest's movement
+    if (keyIsPressed) {
+        if (keyCode === RIGHT)
+        {
+            chestX += 4; // Move Right 4px
+        }
+        else if (keyCode === LEFT)
+        {
+            chestX-= 4; // Move Left 4px
+        }
+    }
+    
+    // Making the bombs fall from the sky
+    for (var a = 0; a < bombs.length; a++) {
+        bombs[a].falling();
+        bombs[a].draw();
+    }
+    
+    // Making the gems fall from sky
+    for (var i = 0; i < gems.length; i++) {
+        gems[i].falling();
+        gems[i].draw();
+    }
+    
+    image(getImage("cute/PlainBlock"), 0, 335, 400, 70);    // Image of ground
+    image(getImage("cute/ChestOpen"), chestX, 290, 50, 80); // Open chest image
+    
+    // Drawing the sun
+    fill(255, 221, 0); 
+    ellipse(36, 36, 72, 72); 
+    textSize(18);
+    fill(0, 0, 0);
+    text("Score: " + score,5,25);
+    text("Time: " + elapsedSeconds + " Seconds", 13, 370);
+    
+}; // Screen where game is played
+var endScreen = function() {
+    currentScene = 3; // Current Scene
+    background(43, 47, 119); // Color of Night Sky
+    chestX = constrain(chestX, 0,350); // Constain chest to screen
+
+    
+    // Drawing the sun
+    fill(246, 241, 213); 
+    ellipse(42, 42, 80, 80); 
+    textSize(30);
+    fill(255, 242, 255);
+    
+    // Logic for differing text for different score ranges
+    if (score < 10) {
+        text("Your Final Score was " + score + "!", 50,140); // Displaying final score
+        text("Try Again and Lock in this time", 10, 180); // Comedic Text
+    }else if (score >= 10 && score <= 20){
+        text("Your Final Score was " + score + "!", 50,140); // Displaying final score
+        text("Could be worse.", 50,180); // Comedic Text
+    }else if (score >= 21 && score <= 26){
+        text("Your Final Score was " + score + "!", 50,140); // Displaying final score
+        text("Getting There.", 50,180); // Comedic Text
+    }else if (score >= 27 && score <= 34){
+        text("Your Final Score was " + score + "!", 50,140); // Displaying final score
+        text("Nice Job!", 50,180); // Comedic Text
+    }else if (score >= 35){
+        text("Your Final Score was " + score + "!", 50,140); // Displaying final score
+        text("Remarkable Achivement!", 50,180); // Comedic Text
+    }
+
+    // Images of Grass blocks
+    image(getImage("cute/GrassBlock"), 0, 335, 100, 80);    
+    image(getImage("cute/GrassBlock"), 100, 335, 100, 80);    
+    image(getImage("cute/GrassBlock"), 200, 335, 100, 80);    
+    image(getImage("cute/GrassBlock"), 300, 335, 100, 80);   
+    
+    image(getImage("cute/ChestOpen"), chestX, 290, 70, 100); //Opened chest image
+    
+    // Images of Gems
+    image(getImage("cute/GemGreen"),chestX+43,321,20,40);
+    image(getImage("cute/GemOrange"),chestX+25,321,20,40);
+    image(getImage("cute/GemBlue"),chestX+7,321,20,40);
+    
+    btn3.draw(); // Home Button
+    
+}; // Screen displaying results
+
+
+var draw = function() {
+    // Logic to establish which scene goes with which screen
+    if (currentScene === 0) {
+        splashScreen(); // If current scene = 0, go to splashScreen
+    }
+    else if (currentScene === 1) {
+        guideScreen(); // If current scene = 1, go to guideScreen
+    }
+    else if (currentScene === 2) {
+        gameScreen(); // If current scene = 2, go to gameScreen
+    }
+    else if (currentScene === 3) {
+        endScreen(); // If current scene = 3, go to endScreen
+    }
+};
+mouseClicked = function() {
+    // Logic for when one of the buttons is clicked, what set of action will be done after
+    if (currentScene === 0 && btn1.isMouseInside()) {
+        // If current = 0 and the mouse is inside button 1
+        startTime = millis(); // Set the startTime to millis
+        gameScreen(); // Call game screen
+        score = 0; // Set score to 0 each time
+    }else if (currentScene === 0 && btn2.isMouseInside()) {
+        // If current = 0 and the mouse is inside button 2
+        guideScreen(); // Go to the guideScreen
+    }else if (currentScene === 1 && btn1.isMouseInside()) {
+        // If current = 1 and the mouse is inside button 1
+        gameScreen(); // Go to the gameScreen
+        score = 0; // Set score to 0 each time
+    }else if (currentScene === 3 && btn3.isMouseInside()) {
+        // If current = 3 and mouse is inside button 3
+        splashScreen(); // Go to home screen
+    }
+};
